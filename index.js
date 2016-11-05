@@ -26,7 +26,7 @@ app.get('/webhook/', function (req, res) {
     if (req.query['hub.verify_token'] === vtoken) {
         res.send(req.query['hub.challenge'])
     }
-    res.send('Error, wrong token')
+    res.send('No sir')
 })
 
 // Spin up the server
@@ -51,7 +51,7 @@ function sendTextMessage(sender, text) {
     let messageData = { text:text }
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:fbtoken},
+        qs: {access_token:token},
         method: 'POST',
         json: {
             recipient: {id:sender},
