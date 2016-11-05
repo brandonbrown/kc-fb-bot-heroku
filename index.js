@@ -8,8 +8,6 @@ const bodyParser = require('body-parser')
 const request = require('request')
 const app = express()
 
-echo $FB_PAGE_ACCESS_TOKEN
-
 app.set('port', (process.env.PORT || 5000))
 
 // Process application/x-www-form-urlencoded
