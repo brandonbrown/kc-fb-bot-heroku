@@ -35,6 +35,27 @@ app.listen(app.get('port'), function() {
 })
 
 app.post('/webhook/', function (req, res) {
+    var data = request.body;
+console.log('received bot webhook');
+// Make sure this is a page subscription
+if (data.object === 'page') {
+// Iterate over each entry - there may be multiple if batched
+data.entry.forEach(function (entry) {
+// Here you can obtain values about the webhook, such as:
+var pageID = entry.id
+var timeOfEvent = entry.time
+entry.messaging.forEach(function (event) {
+if (event.message) {
+receivedMessage(event);
+} else if (event.game_play) {
+receivedGameplay(event);
+} else {
+console.log('Webhook received unknown event: ', entry.id);
+
+}
+});
+});
+}
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
       let event = req.body.entry[0].messaging[i]
@@ -108,6 +129,7 @@ function sendGenericMessage(sender) {
             }
         }
     }
+   
     request({
         url: 'https://graph.facebook.com/v2.6/me/messages',
         qs: {access_token:token},
@@ -124,3 +146,60 @@ function sendGenericMessage(sender) {
         }
     })
 }
+function receivedGameplay (event) {
+// Page-scoped ID of the bot user
+var senderId = event.sender.id;
+
+// FBInstant player ID: event.game_play.player_id
+// FBInstant context ID: event.game_play.context_id
+// User's Page-scoped ID: event.sender.id
+
+// Check for payload
+if (event.game_play.payload) {
+//
+// The variable payload here contains data set by
+// FBInstant.setSessionData()
+//
+var payload = JSON.parse(event.game_play.payload);
+
+// In this example, the bot is just "echoing" the message received
+// immediately. In your game, you'll want to delay the bot messages
+// to remind the user to play 1, 3, 7 days after game play, for example.
+sendMessage(senderId, null, 'wali tal3ab azaml 😂 '+ event.eventsSeen, 'Play now!', payload);
+}
+}
+function sendMessage(player, context, message, cta, payload) {
+var button = {
+type: 'game_play',
+title: cta
+};
+
+if (context) {
+button.context = context;
+}
+if (payload) {
+button.payload = JSON.stringify(payload);
+}
+var messageData = {
+recipient: {
+id: player
+},
+message: {
+attachment: {
+type: 'template',
+payload: {
+template_type: 'generic',
+elements: [
+{
+title: message,
+buttons: [button]
+}
+]
+}
+}
+}
+};
+
+callSendAPI(messageData);
+}
+
