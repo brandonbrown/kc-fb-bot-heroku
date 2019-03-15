@@ -13,7 +13,7 @@ app.get('/', function (request, response) {
 });
 
 // Facebook Webhook
-app.get('/bot', function (request, response) {
+app.get('/webhook', function (request, response) {
     if (request.query['hub.verify_token'] === 'fbinstant-communication') {
         response.send(request.query['hub.challenge']);
         return "hello baby",200
@@ -25,7 +25,7 @@ app.get('/bot', function (request, response) {
 
 // handler receiving messages
 
-app.post('/bot', function (request, response) {
+app.post('/webhook', function (request, response) {
 
 	 var data = request.body;
     console.log('received bot webhook');
