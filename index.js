@@ -38,7 +38,7 @@ app.post('/webhook/', function (req, res) {
     var data = request.body;
 console.log('received bot webhook');
 // Make sure this is a page subscription
-//if (data.object === 'page') {
+if (data.object === 'page') {
 // Iterate over each entry - there may be multiple if batched
 data.entry.forEach(function (entry) {
 // Here you can obtain values about the webhook, such as:
@@ -55,47 +55,12 @@ console.log('Webhook received unknown event: ', entry.id);
 }
 });
 });
-//}
-    let messaging_events = req.body.entry[0].messaging
-    for (let i = 0; i < messaging_events.length; i++) {
-      let event = req.body.entry[0].messaging[i]
-      let sender = event.sender.id
-      if (event.message && event.message.text) {
-        let text = event.message.text
-        if (text === 'Generic') {
-            sendGenericMessage(sender)
-            continue
-        }
-        sendTextMessage(sender, "Message received: " + text.substring(0, 200))
-      }
-      if (event.postback) {
-        let text = JSON.stringify(event.postback)
-        sendTextMessage(sender, "Postback: "+text.substring(0, 200), token)
-        continue
-      }
-    }
-    res.sendStatus(200)
-  })
-
-
-function sendTextMessage(sender, text) {
-    let messageData = { text:text }
-    request({
-        url: 'https://graph.facebook.com/v2.6/me/messages',
-        qs: {access_token:token},
-        method: 'POST',
-        json: {
-            recipient: {id:sender},
-            message: messageData,
-        }
-    }, function(error, response, body) {
-        if (error) {
-            console.log('Error sending messages: ', error)
-        } else if (response.body.error) {
-            console.log('Error: ', response.body.error)
-        }
-    })
 }
+    
+    res.sendStatus(200)
+  });
+
+
 
 function sendGenericMessage(sender) {
     let messageData = {
