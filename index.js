@@ -38,7 +38,7 @@ app.post('/webhook/', function (req, res) {
     var data = request.body;
 console.log('received bot webhook');
 // Make sure this is a page subscription
-if (data.object === 'page') {
+//if (data.object === 'page') {
 // Iterate over each entry - there may be multiple if batched
 data.entry.forEach(function (entry) {
 // Here you can obtain values about the webhook, such as:
@@ -55,7 +55,7 @@ console.log('Webhook received unknown event: ', entry.id);
 }
 });
 });
-}
+//}
     let messaging_events = req.body.entry[0].messaging
     for (let i = 0; i < messaging_events.length; i++) {
       let event = req.body.entry[0].messaging[i]
