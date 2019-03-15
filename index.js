@@ -14,7 +14,7 @@ app.get('/', function (request, response) {
 
 // Facebook Webhook
 app.get('/webhook', function (request, response) {
-    if (request.query['hub.verify_token'] === 'fbinstant-communication') {
+    if (request.query['hub.verify_token'] === 'mygame') {
         response.send(request.query['hub.challenge']);
         return "hello baby",200
     } else {
